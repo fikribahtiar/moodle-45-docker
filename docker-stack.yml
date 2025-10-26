@@ -46,7 +46,6 @@ services:
 
   moodle-cron:
     image: docker-moodle-50-moodle-cron:latest
-    command: ["/usr/sbin/cron", "-f", "-L", "15"]
     volumes:
       - /home/docker-moodle-50/moodle:/var/www/html:delegated
       - /mnt/moodledata:/var/moodledata:rw
