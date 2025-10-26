@@ -1,0 +1,17 @@
+FROM php:8.3-fpm
+
+# Install tools yang diperlukan
+RUN apt-get update && apt-get install -y cron git unzip libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev libzip-dev libicu-dev && \
+    docker-php-ext-install mysqli pdo pdo_mysql zip intl gd soap && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy source Moodle dari build utama (opsional)
+COPY ./moodle /var/www/html
+
+# Tambahkan cron job Moodle (tiap menit)
+RUN echo "* * * * * root /usr/local/bin/php /var/www/html/admin/cli/cron.php > /proc/1/fd/1 2>&1" > /etc/cron.d/moodle-cron
+
+# Set permission dan aktifkan cron
+RUN chmod 0644 /etc/cron.d/moodle-cron && crontab /etc/cron.d/moodle-cron
+
+CMD ["cron", "-f"]
