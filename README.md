@@ -1,0 +1,51 @@
+Clone Repo nya
+
+https://github.com/fikribahtiar/moodle-45-docker
+Config moodle ini ada beberapa yang perlu dipersiapkan sebelum dideploy
+1. Membuat server database central (mysql or mariadb)
+2. Membuat server untuk moodledata (NFS or EFS)
+3. Membuat folder mounting sesuai documentasi ada di /mnt/moodledata
+4. Hapus config.php terlebih dahulu pada /moodle/config.php (karena akan dibuat secara manual dari 0) 
+
+Untuk Mendeploy melalui Docker Swarm dapat Melakukannya sebagai berikut
+Langkahnya cukup sederhana:
+sudo docker swarm init --advertise-addr 192.168.2.252
+
+Kemudian buat overlay network:
+sudo docker network create -d overlay moodle-net
+
+Deploy stack:
+sudo docker stack deploy -c docker-stack.yml moodle
+
+Lihat hasilnya:
+docker service ls
+docker ps
+
+Untuk scale Up manual
+docker service scale moodle_moodle-php=4
+
+kalau ada perubahan di docker-stack.yml
+docker stack ls
+docker compose -f docker-stack.yml config > /dev/null
+docker stack deploy -c docker-stack.yml moodle
+docker service ps moodle_moodle-php
+
+cek 
+docker service ls
+
+Ketika semua nya udah dideploy sekarang Update Image cron nya supaya bisa satu menit sekali menjalankan cron
+
+docker build -t docker-moodle-50-moodle-cron:latest -f Dockerfile-cron .
+
+docker stack deploy -c docker-stack.yml moodle
+
+kalau mau update config seperti php dan nginx caranya edit file config di /php/php.ini atau /nginx/default.conf
+
+setelah selesai
+Validasi
+docker compose -f docker-stack.yml config
+Deploy ulang
+docker stack deploy -c docker-stack.yml moodle
+cek hasilnya
+docker stack services moodle
+
