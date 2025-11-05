@@ -1,0 +1,22 @@
+services:
+  moodle-cron:
+    image: docker-moodle-50-moodle-cron:latest
+    container_name: moodle_cron
+    volumes:
+      - ./moodle:/var/www/html:delegated
+      - /mnt/moodledata:/var/moodledata:rw
+    environment:
+      - DB_HOST=mysql2318ae62752e.rds.ibytepluses.com
+      - DB_NAME=moodle
+      - DB_USER=moodle
+      - DB_PASS=Moodle123#
+      - REDIS_HOST=redis-mlynpi92buk1s5cya.redis.ibytepluses.com
+      - REDIS_PORT=6379
+      - REDIS_PASS=Moodle123
+    networks:
+      - moodle-net
+    restart: unless-stopped
+
+networks:
+  moodle-net:
+    driver: bridge
