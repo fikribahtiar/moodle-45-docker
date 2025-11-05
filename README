@@ -36,6 +36,11 @@ docker service ls
 Ketika semua nya udah dideploy sekarang Update Image cron nya supaya bisa satu menit sekali menjalankan cron
 
 docker build -t docker-moodle-50-moodle-cron:latest -f Dockerfile-cron .
+
+Opsional
+untuk restart container dengan image baru
+docker compose -f docker-compose-cron.yml up -d
+
 docker stack deploy -c docker-stack.yml moodle
 kalau mau update config seperti php dan nginx caranya edit file config di /php/php.ini atau /nginx/default.conf
 
